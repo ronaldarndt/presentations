@@ -1,16 +1,25 @@
 {
-  "name": "presentations",
+  "name": "aaaa",
+  "version": "0.0.1",
   "type": "module",
-  "private": true,
   "scripts": {
-    "build": "slidev build",
-    "dev": "slidev --open",
-    "export": "slidev export"
+    "format": "oxfmt --write .",
+    "lint": "oxlint --fix ."
   },
   "dependencies": {
-    "@slidev/cli": "^52.15.2",
-    "@slidev/theme-default": "latest",
-    "@slidev/theme-seriph": "latest",
-    "vue": "^3.5.33"
-  }
+    "@fontsource-variable/sometype-mono": "5.3.0",
+    "@fontsource/chakra-petch": "5.3.0",
+    "bun": "1.4.2"
+  },
+  "devDependencies": {
+    "oxfmt": "0.67.0",
+    "oxlint": "1.82.0",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "apps/*"
+  ]
 }

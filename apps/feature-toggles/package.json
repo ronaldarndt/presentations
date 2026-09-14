@@ -1,0 +1,19 @@
+{
+  "name": "feature-toggles",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun ./index.html",
+    "build": "bun build --compile --target=browser ./index.html --outdir=dist"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  },
+  "dependencies": {
+    "reveal.js": "6.0.2"
+  }
+}
