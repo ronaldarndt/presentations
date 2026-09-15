@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="index.css" />
     <script src="app.ts" defer></script>
   </head>
-  <body>
+  <body class="dark">
     <div class="reveal">
       <div class="slides">
         <section>
@@ -19,6 +19,7 @@
           <h2>Roteiro</h2>
           <ol>
             <li>O que são feature toggles</li>
+            <li>O que não são feature toggles</li>
             <li>Formas de implementação</li>
             <li>Possibilidades</li>
             <li>Exemplos práticos</li>
@@ -28,26 +29,111 @@
 
         <section>
           <h2>O que são feature toggles</h2>
+          <div class="definition">
+            <p>Feature = <span>funcionalidade</span></p>
+            <p>Toggle = <span>interruptor</span></p>
+          </div>
           <p>
-            Também conhecidas como "Feature Flags", feature toggles permitem
-            ativar ou desativar funcionalidades sem precisar fazer deploy do
-            sistema.
+            Ferramentas que permitem ativar ou desativar funcionalidades sem
+            precisar fazer deploy do sistema.
           </p>
         </section>
 
         <section>
+          <h2>O que não são feature toggles</h2>
+          <ul>
+            <li>Chave especial do Secullum RH</li>
+          </ul>
+
+          <aside>
+            Chaves especiais não são exatamente feature toggles, mas sim
+            preferências de usuário. São coisas específicas para uma empresa que
+            eles podem ativar/desativar. Feature toggles são mais voltados para
+            toggles gerais do sistema inteiro e controlados por nós.
+          </aside>
+        </section>
+
+        <section data-auto-animate>
           <h2>Formas de implementação</h2>
           <ul>
-            <li>Configurações no banco de dados (chave especial)</li>
+            <li>Configurações no banco de dados</li>
+          </ul>
+          <pre><code>
+            async Task&lt;IServidorCache&gt; BuscarServidorCacheAsync() 
+            {
+              var usarNovoServidorCache = await contexto.FeatureToggles
+                .Where(c => c.Chave == "NovoServidorCache")
+                .Select(c => c.Valor)
+                .FirstOrDefaultAsync();
+
+              return usarNovoServidorCache
+                ? new KeyDBCache()
+                : new RedisCache();
+            }
+  </code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+          <ul>
+            <li>Configurações no banco de dados</li>
+            <li>Arquivos de configuração</li>
+          </ul>
+          <div class="horizontal block">
+            <div>
+              <div class="code-title">appsettings.json</div>
+              <pre><code data-lang="json">
+                {
+                  "NovoServidorCache": true
+                }
+            </code></pre>
+            </div>
+
+            <div>
+              <div class="code-title">Program.cs</div>
+              <pre id="program-cs"><code data-lang="csharp">
+            builder.Services.AddJsonFile("appsettings.json");
+
+            async Task&lt;IServidorCache&gt; BuscarServidorCacheAsync() 
+            {
+              var usarNovoServidorCache = await contexto.FeatureToggles
+                .Where(c => c.Chave == "NovoServidorCache")
+                .Select(c => c.Valor)
+                .FirstOrDefaultAsync();
+
+              return usarNovoServidorCache
+                ? new KeyDBCache()
+                : new RedisCache();
+            }
+  </code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+          <ul>
+            <li>Configurações no banco de dados</li>
             <li>Arquivos de configuração</li>
             <li>Serviços externos (Azure AppConfig, Unleash, etc)</li>
           </ul>
-          <div class="fragment"></div>
-          <div class="fragment">
-            <pre><code data-trim data-noescape>
 
+          <pre id="external-services"><code data-lang="csharp">
+            var settings = new UnleashSettings()
+            {
+                AppName = "pontoweb",
+                UnleashApi = new Uri("https://unleash.secullum.com.br"),
+                // ... Autenticação, logs, etc
+            };
+            var unleash = new DefaultUnleash(settings);
+            services.AddSingleton<IUnleash>(c => unleash);
+
+            // ...
+
+            var context = new UnleashContext() { UserId = m_configuracoesAmbiente.UsuarioId };
+
+            var usarNovoServidorCache = unleash.IsEnabled("NovoServidorCache", context);
   </code></pre>
-          </div>
         </section>
       </div>
     </div>

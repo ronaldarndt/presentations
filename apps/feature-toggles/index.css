@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap');
-@import 'reveal.js/reveal.css';
-@import 'reveal.js/theme/black.css';
+@import url("https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap");
+@import "reveal.js/reveal.css";
+@import "reveal.js/theme/black.css";
 
 :root {
   --color-paper: #f4f0e8;
-  --font: 'Sometype Mono Variable', monospace;
+  --font: "Sometype Mono Variable", monospace;
 
   --r-background: #2a2a2a;
   --r-background-color: var(--r-background);
@@ -20,4 +20,82 @@
 .dark {
   --color-background: #000;
   --color-foreground: var(--color-paper);
+  --accent: #ff4081;
+}
+
+.reveal .slides {
+  text-align: start;
+
+  h2,
+  section:first-of-type {
+    text-align: center;
+  }
+}
+
+.block {
+  margin-top: 1rem;
+}
+
+.definition {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--r-main-color);
+  border-left: 4px solid var(--accent);
+  border-radius: 4px;
+  color: var(--r-background);
+
+  p {
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  span {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -15px;
+      width: 115%;
+      height: 100%;
+      opacity: 0.3;
+      background-color: #e3f33c;
+      border-radius: 4px;
+    }
+  }
+}
+
+.horizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.reveal pre {
+  margin: 0;
+  padding: 0.5rem;
+  width: auto;
+  box-shadow: none;
+  font-size: 1rem;
+}
+
+[data-auto-animate],
+[data-auto-animate-target],
+pre,
+section,
+section * {
+  &:not(ul, li) {
+    overflow: hidden !important;
+  }
+}
+
+.code-title {
+  font-size: 0.5rem;
+  color: var(--color-foreground);
+  opacity: 0.7;
+  text-align: start;
+  margin-left: 20px;
 }
