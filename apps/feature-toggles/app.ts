@@ -2,10 +2,12 @@ import Reveal from "reveal.js";
 import Markdown from "reveal.js/plugin/markdown";
 import { createHighlighter } from "shiki";
 import { normalizeIndent } from "./helpers";
+// @ts-ignore
+import Mermaid from "reveal.js-mermaid-plugin";
 
 async function init() {
   const highlighter = await createHighlighter({
-    langs: ["csharp", "json", "md"],
+    langs: ["csharp", "json", "md", "typescript"],
     themes: ["dracula"]
   });
 
@@ -24,8 +26,10 @@ async function init() {
   }
 
   const deck = new Reveal({
-    plugins: [Markdown],
-    history: true
+    plugins: [Markdown, Mermaid],
+    history: true,
+    autoAnimateDuration: 0.4,
+    autoAnimateEasing: "ease"
   });
   deck.initialize();
 }

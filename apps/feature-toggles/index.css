@@ -6,6 +6,8 @@
   --color-paper: #f4f0e8;
   --font: "Sometype Mono Variable", monospace;
 
+  --radius: 8px;
+
   --r-background: #2a2a2a;
   --r-background-color: var(--r-background);
 
@@ -25,11 +27,16 @@
 
 .reveal .slides {
   text-align: start;
+  font-size: 32px;
 
   h2,
   section:first-of-type {
     text-align: center;
   }
+}
+
+.reveal ul {
+  margin: auto;
 }
 
 .block {
@@ -41,27 +48,29 @@
   padding: 1rem;
   background-color: var(--r-main-color);
   border-left: 4px solid var(--accent);
-  border-radius: 4px;
+  border-radius: var(--radius);
   color: var(--r-background);
 
-  p {
-    margin: 0;
-    line-height: 1.2;
-  }
+  &.with-highlights {
+    p {
+      margin: 0;
+      line-height: 1.2;
+    }
 
-  span {
-    position: relative;
+    span {
+      position: relative;
 
-    &::after {
-      content: "";
-      position: absolute;
-      top: -2px;
-      left: -15px;
-      width: 115%;
-      height: 100%;
-      opacity: 0.3;
-      background-color: #e3f33c;
-      border-radius: 4px;
+      &::after {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -15px;
+        width: 115%;
+        height: 100%;
+        opacity: 0.3;
+        background-color: #e3f33c;
+        border-radius: var(--radius);
+      }
     }
   }
 }
@@ -82,13 +91,27 @@
   font-size: 1rem;
 }
 
-[data-auto-animate],
-[data-auto-animate-target],
-pre,
-section,
-section * {
-  &:not(ul, li) {
-    overflow: hidden !important;
+li {
+  position: relative;
+}
+
+.highlight {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  &::after {
+    content: "";
+    background-color: var(--accent);
+    opacity: 0.2;
+    position: absolute;
+    top: -5%;
+    left: -10px;
+    width: calc(100% + 20px);
+    height: 110%;
+    border-radius: var(--radius);
   }
 }
 
@@ -98,4 +121,21 @@ section * {
   opacity: 0.7;
   text-align: start;
   margin-left: 20px;
+}
+
+.full-height {
+  flex: 1;
+}
+
+.mermaid {
+  width: 150%;
+  margin-left: -27%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem 0.5rem 2rem;
+}
+
+table {
+  font-size: 1.8rem;
 }

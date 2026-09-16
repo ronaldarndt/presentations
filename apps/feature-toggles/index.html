@@ -19,24 +19,76 @@
           <h2>Roteiro</h2>
           <ol>
             <li>O que são feature toggles</li>
+            <li>Possibilidades</li>
             <li>O que não são feature toggles</li>
             <li>Formas de implementação</li>
-            <li>Possibilidades</li>
+            <li>Problemas</li>
             <li>Exemplos práticos</li>
+            <!-- AR, seletor servidor banco, telas escondidas no pontoweb unleash -->
+
             <li>Conclusão</li>
           </ol>
         </section>
 
         <section>
           <h2>O que são feature toggles</h2>
-          <div class="definition">
+          <div class="definition with-highlights">
             <p>Feature = <span>funcionalidade</span></p>
             <p>Toggle = <span>interruptor</span></p>
           </div>
           <p>
-            Ferramentas que permitem ativar ou desativar funcionalidades sem
-            precisar fazer deploy do sistema.
+            Ferramentas e técnicas que permitem ativar ou desativar
+            funcionalidades sem precisar fazer deploy do sistema.
           </p>
+        </section>
+
+        <section>
+          <p>Deploy sem feature</p>
+          <div class="mermaid definition">
+            <pre>
+              flowchart LR
+                  A[Dev] --> B[Revisão]
+                  B --> C[Teste]
+                  C --> D[Merge]
+                  D --> E[Deploy]
+                  E -.-> F{Deu algo muito errado?}
+                  F -->|Sim| G[Revert correndo]
+                  G --> A
+                  style E fill:#ff4081,color:#fff
+            </pre>
+          </div>
+        </section>
+
+        <section>
+          <p>Deploy <strong>com</strong> feature</p>
+          <div class="mermaid definition">
+            <pre>
+              flowchart LR
+                  A[Processo dev] --> E["Deploy (feature desativada)"]
+                  E --> F[Ativa feature para os devs]
+                  F -.-> G{Deu algo muito errado?}
+                  G -->|Sim| H[Desativa feature]
+                  G -->|Não| I[Ativa feature para 10% dos usuários]
+                  I -.-> J{Deu algo muito errado?}
+                  J -->|Sim| H
+                  J -->|Não| K[Ativa feature para todo mundo]
+                  K -.-> L{Deu algo muito errado?}
+                  L -->|Sim| H
+                  L -->|Não| N[Sucesso]
+                  style F fill:#ff4081,color:#fff
+            </pre>
+          </div>
+        </section>
+
+        <section>
+          <h2>Possibilidades</h2>
+          <ul>
+            <li>Ativar/desativar funcionalidades rapidamente</li>
+            <li>Testes A/B</li>
+            <li>Rollouts graduais</li>
+            <li>Selecionar quais usuários tem acesso a cada funcionalidade</li>
+            <li>Esconder páginas em testes</li>
+          </ul>
         </section>
 
         <section>
@@ -55,10 +107,175 @@
 
         <section data-auto-animate>
           <h2>Formas de implementação</h2>
+
+          <p>Exemplo incremental de uma feature de tela nova</p>
+
+          <div>
+            <div class="code-title">pagina-cidades.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              export default function Cidades() {
+                return <div>Página legal</div>;
+              }
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+
+          <div>
+            <div class="code-title">paginas.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              const paginas = [
+                '/dashboard',
+                '/horarios',
+                // '/cidades'
+              ];
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+
+          <div>
+            <div class="code-title">paginas.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              const paginas = [
+                '/dashboard',
+                '/horarios',
+              ];
+
+              if (usuario.revendaId === 735) {
+                paginas.push('/cidades');
+              }
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+
+          <div>
+            <div class="code-title">paginas.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              import { CONSTANTES } from './constantes';
+
+              const paginas = [
+                '/dashboard',
+                '/horarios',
+              ];
+
+              if (usuario.revendaId === 735 || CONSTANTES.MOSTRAR_CIDADES) {
+                paginas.push('/cidades');
+              }
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+
+          <div>
+            <div class="code-title">paginas.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              import config from './config.json';
+
+              const paginas = [
+                '/dashboard',
+                '/horarios',
+              ];
+
+              if (config.MOSTRAR_CIDADES) {
+                paginas.push('/cidades');
+              }
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+
+          <div>
+            <div class="code-title">paginas.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              import config from './config.json';
+
+              const paginas = [
+                '/dashboard',
+                '/horarios',
+              ];
+
+              if (config.cidades.ativo && config.cidades.usuariosPermitidos.includes(usuario.id)) {
+                paginas.push('/cidades');
+              }
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+
+          <div>
+            <div class="code-title">paginas.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              import config from './config.json';
+
+              const paginas = [
+                '/dashboard',
+                '/horarios',
+                '/cidades'
+              ];
+
+              if (config.feriados.ativo && config.feriados.usuariosPermitidos.includes(usuario.id)) {
+                paginas.push('/feriados');
+              }
+
+              if (config.empresas.ativo && 
+                (config.empresas.usuariosPermitidos.includes(usuario.id)
+                  // O que fazer se um dia a regra virar inclusiva (&&)?
+                  || (usuario.bancoId % 100) < config.empresas.porcentagemRollout
+                  || usuario.ehAdmin)) {
+                paginas.push('/empresas');
+              }
+              // ... Várias outras páginas
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
+
+          <div>
+            <div class="code-title">paginas.tsx</div>
+            <pre><code data-lang="typescript"><script type="text/template">
+              import features from './features';
+
+              const paginas = [
+                '/dashboard',
+                '/horarios',
+              ];
+
+              // Chama a API sempre?
+              // Faz cache? Por quanto tempo?
+              if (await features.enabled('cidades', usuario)) {
+                paginas.push('/cidades');
+              }
+            </script></code></pre>
+          </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Formas de implementação</h2>
           <ul>
-            <li>Configurações no banco de dados</li>
+            <li>
+              <div class="highlight" data-id="highlight"></div>
+              Configurações no banco de dados
+            </li>
+            <li>Arquivos de configuração</li>
+            <li>Serviços externos (Azure AppConfig, Unleash, etc)</li>
           </ul>
-          <pre><code>
+          <pre class="full-height"><code>
             async Task&lt;IServidorCache&gt; BuscarServidorCacheAsync() 
             {
               var usarNovoServidorCache = await contexto.FeatureToggles
@@ -77,9 +294,13 @@
           <h2>Formas de implementação</h2>
           <ul>
             <li>Configurações no banco de dados</li>
-            <li>Arquivos de configuração</li>
+            <li>
+              <div class="highlight" data-id="highlight"></div>
+              Arquivos de configuração
+            </li>
+            <li>Serviços externos (Azure AppConfig, Unleash, etc)</li>
           </ul>
-          <div class="horizontal block">
+          <div class="horizontal block full-height">
             <div>
               <div class="code-title">appsettings.json</div>
               <pre><code data-lang="json">
@@ -115,10 +336,13 @@
           <ul>
             <li>Configurações no banco de dados</li>
             <li>Arquivos de configuração</li>
-            <li>Serviços externos (Azure AppConfig, Unleash, etc)</li>
+            <li>
+              <div class="highlight" data-id="highlight"></div>
+              Serviços externos (Azure AppConfig, Unleash, etc)
+            </li>
           </ul>
 
-          <pre id="external-services"><code data-lang="csharp">
+          <pre><code data-lang="csharp">
             var settings = new UnleashSettings()
             {
                 AppName = "pontoweb",
@@ -126,7 +350,7 @@
                 // ... Autenticação, logs, etc
             };
             var unleash = new DefaultUnleash(settings);
-            services.AddSingleton<IUnleash>(c => unleash);
+            services.AddSingleton&lt;IUnleash&gt;(c =&gt; unleash);
 
             // ...
 
@@ -134,6 +358,173 @@
 
             var usarNovoServidorCache = unleash.IsEnabled("NovoServidorCache", context);
   </code></pre>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <ul>
+            <li>Permite alteração rápida</li>
+          </ul>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <ul>
+            <li>Dependem de rede</li>
+          </ul>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <ul>
+            <li>Dependem de rede</li>
+            <li>Podem ter latência</li>
+          </ul>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <ul>
+            <li>Dependem de rede</li>
+            <li>Podem ter latência</li>
+            <li>Podem falhar</li>
+          </ul>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <ul>
+            <li>Dependem de rede</li>
+            <li>Podem ter latência</li>
+            <li>Podem falhar</li>
+            <li>Podem sobrecarregar o servidor de features</li>
+          </ul>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <ul>
+            <li>
+              Cache
+              <ul>
+                <li>E se ficar desatualizado?</li>
+                <li>E se ficar inconsistente entre instâncias?</li>
+                <li>E se for limpo do nada? (thundering herd)</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <p>Se o serviço cair? 💀</p>
+
+          <ol style="list-style-type: lower-latin">
+            <li>Crashar a aplicação</li>
+            <li>Usar valor padrão local</li>
+            <li>Usar valor no cache</li>
+            <li>Ignorar a feature</li>
+          </ol>
+        </section>
+
+        <section>
+          <p>Tipos de flags</p>
+          <table>
+            <tr>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th>Vida</th>
+            </tr>
+            <tr>
+              <td>Flag de release</td>
+              <td>Ativa ou desativa funcionalidades específicas</td>
+              <td>Curta</td>
+            </tr>
+            <tr>
+              <td>Flag de experimento</td>
+              <td>Ativa a funcionalidade para uma porcentagem de usuários</td>
+              <td>Temporária</td>
+            </tr>
+            <tr>
+              <td>Flag operacional</td>
+              <td>Controla aspectos operacionais do sistema</td>
+              <td>Potencialmente longa</td>
+            </tr>
+            <tr>
+              <td>Flag de permissão</td>
+              <td>
+                Controla o acesso a funcionalidades com base em permissões
+              </td>
+              <td>Potencialmente longa</td>
+            </tr>
+          </table>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Pegadinhas</h2>
+          <ul>
+            <li>
+              <div class="highlight"></div>
+              "Débito de flags"
+            </li>
+            <li>Flags de ambiente</li>
+          </ul>
+
+          <p>
+            É quando a flag é removida mas o código continua lá, ou o contrário.
+          </p>
+
+          <table>
+            <tr>
+              <th>Flag</th>
+              <th>Status</th>
+            </tr>
+            <tr>
+              <td>novo-dashboard</td>
+              <td>🟢Ativa</td>
+            </tr>
+            <tr>
+              <td>usar-novo-servico-calculos</td>
+              <td>🟡Rollout</td>
+            </tr>
+            <tr>
+              <td>teste-2020-checkin</td>
+              <td>🔴Por que isso ainda existe?</td>
+            </tr>
+          </table>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Pegadinhas</h2>
+          <ul>
+            <li>"Débito de flags"</li>
+            <li>
+              <div class="highlight"></div>
+              Flags de ambiente
+            </li>
+          </ul>
+
+          <p>
+            ❌ Não é possível (de forma fácil) criar flags de ambiente, ou seja,
+            flags que controlam a configuração do ambiente em que o sistema está
+            rodando.
+          </p>
+
+          <div>
+            Alguns exemplos são:
+            <ul>
+              <li>Configurar a versão do .Net</li>
+              <li>Configurar a versão de uma biblioteca</li>
+              <li>Configurar qual migration do banco usar</li>
+            </ul>
+          </div>
         </section>
       </div>
     </div>

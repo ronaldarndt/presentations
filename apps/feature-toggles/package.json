@@ -16,6 +16,7 @@
   "dependencies": {
     "@shikijs/transformers": "4.4.3",
     "reveal.js": "6.0.2",
+    "reveal.js-mermaid-plugin": "11.15.0",
     "shiki": "4.4.3"
   }
 }
