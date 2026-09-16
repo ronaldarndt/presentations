@@ -12,7 +12,7 @@
       <div class="slides">
         <section>
           <h2>Feature Toggles</h2>
-          <p>Como fazer deploy sem fazer deploy</p>
+          <p>Como "fazer deploy" sem fazer deploy</p>
         </section>
 
         <section>
@@ -22,7 +22,7 @@
             <li>Possibilidades</li>
             <li>O que não são feature toggles</li>
             <li>Formas de implementação</li>
-            <li>Problemas</li>
+            <li>Pegadinhas e limitações</li>
             <li>Exemplos práticos</li>
             <!-- AR, seletor servidor banco, telas escondidas no pontoweb unleash -->
 
@@ -88,21 +88,64 @@
             <li>Rollouts graduais</li>
             <li>Selecionar quais usuários tem acesso a cada funcionalidade</li>
             <li>Esconder páginas em testes</li>
+            <li>Mergear funcionalidades incompletas</li>
           </ul>
         </section>
 
         <section>
           <h2>O que não são feature toggles</h2>
-          <ul>
-            <li>Chave especial do Secullum RH</li>
-          </ul>
+          <p>Chave especial do Secullum RH</p>
 
-          <aside>
+          <hr />
+
+          <p>
             Chaves especiais não são exatamente feature toggles, mas sim
-            preferências de usuário. São coisas específicas para uma empresa que
-            eles podem ativar/desativar. Feature toggles são mais voltados para
-            toggles gerais do sistema inteiro e controlados por nós.
-          </aside>
+            preferências de usuário.
+          </p>
+
+          <p>
+            São específicas para uma empresa e o usuário pode ativar/desativar.
+          </p>
+
+          <p>Feature toggles são controlados por nós.</p>
+        </section>
+
+        <section>
+          <h2>Tipos de flags</h2>
+          <table>
+            <tr>
+              <th>Tipo</th>
+              <th>Descrição</th>
+              <th>Vida</th>
+              <th>Exemplo</th>
+            </tr>
+            <tr>
+              <td>Flag de release</td>
+              <td>
+                Ativa ou desativa funcionalidades até o lançamento oficial
+              </td>
+              <td>Curta</td>
+              <td>pagina-registros</td>
+            </tr>
+            <tr>
+              <td>Flag de experimento</td>
+              <td>Teste A/B, geralmente com métricas para avaliar o impacto</td>
+              <td>Média</td>
+              <td>mostrar-dark-mode</td>
+            </tr>
+            <tr>
+              <td>Flag operacional</td>
+              <td>Controla aspectos operacionais do sistema</td>
+              <td>Potencialmente longa</td>
+              <td>usar-novo-servidor-cache, desligar-calculo-pesado</td>
+            </tr>
+            <tr>
+              <td>Flag de permissão</td>
+              <td>Controla o acesso a funcionalidades com base em regras</td>
+              <td>Potencialmente longa</td>
+              <td>desligar-chamada-por-video, beta-novo-site</td>
+            </tr>
+          </table>
         </section>
 
         <section data-auto-animate>
@@ -118,6 +161,10 @@
               }
             </script></code></pre>
           </div>
+
+          <aside class="notes">
+            Digamos que a página "cidades" está sendo implementada hoje
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -133,6 +180,11 @@
               ];
             </script></code></pre>
           </div>
+          <aside class="notes">
+            AINDA NÃO É UMA FEATURE FLAG.<br />
+            Ela foi criada mas ainda não queremos lançar para o público em
+            geral. Deixa comentada.
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -146,11 +198,15 @@
                 '/horarios',
               ];
 
-              if (usuario.revendaId === 735) {
+              if (usuario.email.endsWith('@secullum.com.br')) {
                 paginas.push('/cidades');
               }
             </script></code></pre>
           </div>
+          <aside class="notes">
+            Liberamos só para a Secullum. Ainda precisa de deploy, ainda não é
+            feature flag
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -166,11 +222,15 @@
                 '/horarios',
               ];
 
-              if (usuario.revendaId === 735 || CONSTANTES.MOSTRAR_CIDADES) {
+              if (usuario.email.endsWith('@secullum.com.br') || CONSTANTES.MOSTRAR_CIDADES) {
                 paginas.push('/cidades');
               }
             </script></code></pre>
           </div>
+          <aside class="notes">
+            Agora libera para Secullum ou geral com base em um arquivo de
+            constantes. Ainda não é feature flag
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -191,6 +251,11 @@
               }
             </script></code></pre>
           </div>
+          <aside class="notes">
+            Passamos para um arquivo json para ficar mais fácil de alterar.
+            Começa a se parecer com uma feature flag, principalmente no backend
+            onde é fácil alterar o arquivo sem fazer um deploy completo.
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -211,6 +276,9 @@
               }
             </script></code></pre>
           </div>
+          <aside class="notes">
+            Mais regras mas ainda usando arquivo json.
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -241,6 +309,10 @@
               // ... Várias outras páginas
             </script></code></pre>
           </div>
+          <aside class="notes">
+            Aqui começa a ficar complicado pois temos muitas regras, muitas
+            flags e ainda usando um arquivo json
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -263,6 +335,10 @@
               }
             </script></code></pre>
           </div>
+          <aside class="notes">
+            Agora sim, estamos usando uma função de feature flag para controlar
+            a liberação das páginas. Surgem algumas dúvidas.
+          </aside>
         </section>
 
         <section data-auto-animate>
@@ -283,7 +359,7 @@
                 .Select(c => c.Valor)
                 .FirstOrDefaultAsync();
 
-              return usarNovoServidorCache
+              return usarNovoServidorCache == "true"
                 ? new KeyDBCache()
                 : new RedisCache();
             }
@@ -313,11 +389,11 @@
             <div>
               <div class="code-title">Program.cs</div>
               <pre id="program-cs"><code data-lang="csharp">
-            builder.Services.AddJsonFile("appsettings.json");
+            builder.Services.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            async Task&lt;IServidorCache&gt; BuscarServidorCacheAsync() 
+            IServidorCache BuscarServidorCacheAsync() 
             {
-              var usarNovoServidorCache = configuration["NovoServidorCache"] == "true";
+              var usarNovoServidorCache = configuration.GetValue&lt;bool&gt;("NovoServidorCache");
 
               return usarNovoServidorCache
                 ? new KeyDBCache()
@@ -339,7 +415,8 @@
             </li>
           </ul>
 
-          <pre><code data-lang="csharp">
+          <pre><code data-lang="csharp" style="font-size: 0.8em;">
+            // Possui cache, polling, fallbacks, retries, etc
             var settings = new UnleashSettings()
             {
                 AppName = "pontoweb",
@@ -431,41 +508,24 @@
           </ol>
         </section>
 
-        <section>
-          <p>Tipos de flags</p>
-          <table>
-            <tr>
-              <th>Tipo</th>
-              <th>Descrição</th>
-              <th>Vida</th>
-            </tr>
-            <tr>
-              <td>Flag de release</td>
-              <td>Ativa ou desativa funcionalidades específicas</td>
-              <td>Curta</td>
-            </tr>
-            <tr>
-              <td>Flag de experimento</td>
-              <td>Ativa a funcionalidade para uma porcentagem de usuários</td>
-              <td>Temporária</td>
-            </tr>
-            <tr>
-              <td>Flag operacional</td>
-              <td>Controla aspectos operacionais do sistema</td>
-              <td>Potencialmente longa</td>
-            </tr>
-            <tr>
-              <td>Flag de permissão</td>
-              <td>
-                Controla o acesso a funcionalidades com base em permissões
-              </td>
-              <td>Potencialmente longa</td>
-            </tr>
-          </table>
+        <section data-auto-animate>
+          <h2>Sobre implementações não locais</h2>
+
+          <p>Se o serviço cair? 💀</p>
+
+          <ol style="list-style-type: lower-latin">
+            <li>Crashar a aplicação</li>
+            <li>
+              <div class="highlight" style="height: 205%"></div>
+              Usar valor padrão local
+            </li>
+            <li>Usar valor no cache</li>
+            <li>Ignorar a feature</li>
+          </ol>
         </section>
 
         <section data-auto-animate>
-          <h2>Pegadinhas</h2>
+          <h2>Pegadinhas e limitações</h2>
           <ul>
             <li>
               <div class="highlight"></div>
@@ -474,9 +534,7 @@
             <li>Flags de ambiente</li>
           </ul>
 
-          <p>
-            É quando a flag é removida mas o código continua lá, ou o contrário.
-          </p>
+          <p>Flag serviu o seu propósito mas ninguém removeu ela do código.</p>
 
           <table>
             <tr>
@@ -499,6 +557,23 @@
         </section>
 
         <section data-auto-animate>
+          <h2>Pegadinhas e limitações</h2>
+          <ul>
+            <li>
+              <div class="highlight"></div>
+              "Débito de flags"
+            </li>
+            <li>Flags de ambiente</li>
+          </ul>
+
+          <p>Formas de mitigar:</p>
+          <ul>
+            <li>Revisões periódicas de código</li>
+            <li>Data de expiração para cada flag com avisos</li>
+          </ul>
+        </section>
+
+        <section data-auto-animate>
           <h2>Pegadinhas</h2>
           <ul>
             <li>"Débito de flags"</li>
@@ -509,19 +584,25 @@
           </ul>
 
           <p>
-            ❌ Não é possível (de forma fácil) criar flags de ambiente, ou seja,
-            flags que controlam a configuração do ambiente em que o sistema está
-            rodando.
+            ❌ Não é possível (de forma fácil) criar flags que controlam o
+            ambiente e/ou coisas fora do código.
           </p>
 
           <div>
             Alguns exemplos são:
             <ul>
-              <li>Configurar a versão do .Net</li>
-              <li>Configurar a versão de uma biblioteca</li>
+              <li>Versão do .Net</li>
               <li>Configurar qual migration do banco usar</li>
             </ul>
           </div>
+        </section>
+
+        <section>
+          <h2>Conclusão e referências</h2>
+
+          <ul>
+            <li>https://martinfowler.com/articles/feature-toggles.html</li>
+          </ul>
         </section>
       </div>
     </div>
