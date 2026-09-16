@@ -1,0 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap");
+
+:root {
+  --bg: #f4f0e8;
+  --color: #333;
+}
+
+.slidev-layout {
+  background-color: var(--bg);
+  color: var(--color);
+  font-family: "Sometype Mono", monospace;
+
+  :not(pre) > code {
+    color: white !important;
+  }
+}
