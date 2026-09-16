@@ -317,10 +317,7 @@
 
             async Task&lt;IServidorCache&gt; BuscarServidorCacheAsync() 
             {
-              var usarNovoServidorCache = await contexto.FeatureToggles
-                .Where(c => c.Chave == "NovoServidorCache")
-                .Select(c => c.Valor)
-                .FirstOrDefaultAsync();
+              var usarNovoServidorCache = configuration["NovoServidorCache"] == "true";
 
               return usarNovoServidorCache
                 ? new KeyDBCache()

@@ -1,5 +1,4 @@
 import Reveal from "reveal.js";
-import Markdown from "reveal.js/plugin/markdown";
 import { createHighlighter } from "shiki";
 import { normalizeIndent } from "./helpers";
 // @ts-ignore
@@ -26,7 +25,7 @@ async function init() {
   }
 
   const deck = new Reveal({
-    plugins: [Markdown, Mermaid],
+    plugins: [Mermaid],
     history: true,
     autoAnimateDuration: 0.4,
     autoAnimateEasing: "ease"
