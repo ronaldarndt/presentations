@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo Unleash</title>
+    <link rel="stylesheet" href="index.css" />
+    <script src="cliente.ts" type="module"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Demo Unleash</h1>
+      <label>
+        Usuário
+        <select id="usuario">
+          <option value="1">1 - Ana</option>
+          <option value="2">2 - Bruno</option>
+          <option value="3">3 - Carla</option>
+        </select>
+      </label>
+    </header>
+
+    <main>
+      <section id="banner" hidden>
+        <h2>Novidades</h2>
+        <p>Bloco que só aparece com a flag <code>mostrar-banner-novidades</code> ligada.</p>
+      </section>
+
+      <section>
+        <h2>Flags do usuário</h2>
+        <ul id="flags"></ul>
+      </section>
+
+      <section>
+        <h2>Resposta de /api/resumo</h2>
+        <pre id="resumo"></pre>
+      </section>
+    </main>
+  </body>
+</html>

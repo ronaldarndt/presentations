@@ -1,0 +1,18 @@
+{
+  "name": "unleash-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot ./servidor.ts",
+    "build": "bun build --target=bun ./servidor.ts --outdir=dist"
+  },
+  "dependencies": {
+    "unleash-client": "6.12.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  }
+}

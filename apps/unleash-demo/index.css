@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Sometype+Mono:ital,wght@0,400..700;1,400..700&display=swap');
+
+:root {
+  --background: #2a2a2a;
+  --foreground: #f4f0e8;
+  --accent: #ff4081;
+}
+
+body.beta {
+  --background: #10243a;
+  --accent: #21d4a0;
+}
+
+body {
+  margin: 0;
+  padding: 32px;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Sometype Mono', monospace;
+  font-size: 20px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 16px;
+}
+
+h1 {
+  color: var(--accent);
+}
+
+select {
+  font: inherit;
+  padding: 8px;
+}
+
+main {
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+section {
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 16px 24px;
+}
+
+#banner {
+  border-color: var(--accent);
+}
+
+#flags {
+  list-style: none;
+  padding: 0;
+}
+
+#flags li::before {
+  content: 'desligada';
+  display: inline-block;
+  width: 10ch;
+  color: #888;
+}
+
+#flags li.ligada::before {
+  content: 'ligada';
+  color: var(--accent);
+}
+
+pre {
+  margin: 0;
+  font-size: 0.9em;
+}
