@@ -20,11 +20,10 @@
           <ol>
             <li>O que são feature toggles</li>
             <li>Possibilidades</li>
-            <li>O que não são feature toggles</li>
+            <li>O que não é feature toggle</li>
             <li>Formas de implementação</li>
             <li>Pegadinhas e limitações</li>
             <li>Exemplos práticos</li>
-            <!-- AR, seletor servidor banco, telas escondidas no pontoweb unleash -->
             <li>Perguntas</li>
           </ol>
         </section>
@@ -52,6 +51,7 @@
                   D --> E[Deploy]
                   E -.-> F{Deu algo muito errado?}
                   F -->|Sim| G[Revert correndo]
+                  F -->|Não| H[Sucesso]
                   G --> A
                   style E fill:#ff4081,color:#fff
             </pre>
@@ -79,79 +79,65 @@
           </div>
         </section>
 
-        <section>
-          <h2>Possibilidades</h2>
-          <ul>
-            <li>Ativar/desativar funcionalidades rapidamente</li>
-            <li>Testes A/B</li>
-            <li>Rollouts graduais</li>
-            <li>Selecionar quais usuários tem acesso a cada funcionalidade</li>
-            <li>Permite mergear funcionalidades incompletas</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>O que não são feature toggles</h2>
-          <p>Chave especial do Secullum RH</p>
-
-          <hr />
-
-          <p>
-            Chaves especiais não são exatamente feature toggles, mas sim
-            preferências de usuário.
-          </p>
-
-          <p>
-            São específicas para uma empresa e o usuário pode ativar/desativar.
-          </p>
-
-          <p>Feature toggles são controlados por nós.</p>
-        </section>
-
         <section id="tipos-de-flags">
-          <h2>Tipos de flags</h2>
+          <h2>Possibilidades e tipos de flag</h2>
           <table>
             <tr>
               <th>Tipo</th>
-              <th>Descrição</th>
+              <th>O que permite</th>
               <th>Vida</th>
               <th>Exemplo</th>
             </tr>
             <tr>
               <td>Flag de release</td>
               <td>
-                Ativa ou desativa funcionalidades até o lançamento oficial
+                Mergear funcionalidade incompleta e liberar aos poucos, com
+                rollout gradual
               </td>
               <td>Curta</td>
-              <td><span class="highlight-bg fit">pagina-registros</span></td>
+              <td><span class="highlight-bg">pagina-registros</span></td>
             </tr>
             <tr>
               <td>Flag de experimento</td>
-              <td>Teste A/B, geralmente com métricas para avaliar o impacto</td>
+              <td>Teste A/B, com métricas para avaliar o impacto</td>
               <td>Média</td>
-              <td><span class="highlight-bg fit">mostrar-dark-mode</span></td>
+              <td><span class="highlight-bg">mostrar-dark-mode</span></td>
             </tr>
             <tr>
               <td>Flag operacional</td>
-              <td>Controla aspectos operacionais do sistema</td>
+              <td>Ligar e desligar partes do sistema em produção, na hora</td>
               <td>Potencialmente longa</td>
               <td>
-                <span class="highlight-bg fit">usar-novo-servidor-cache</span>
+                <span class="highlight-bg">usar-novo-servidor-cache</span>
                 ,
-                <span class="highlight-bg fit">desligar-calculo-pesado</span>
+                <span class="highlight-bg">desligar-calculo-pesado</span>
               </td>
             </tr>
             <tr>
               <td>Flag de permissão</td>
-              <td>Controla o acesso a funcionalidades com base em regras</td>
+              <td>Escolher quem tem acesso a cada funcionalidade</td>
               <td>Potencialmente longa</td>
               <td>
-                <span class="highlight-bg fit">desligar-chamada-por-video</span>
+                <span class="highlight-bg">desativar-chat-video</span>
                 ,
-                <span class="highlight-bg fit">beta-novo-site</span>
+                <span class="highlight-bg">beta-novo-site</span>
               </td>
             </tr>
           </table>
+        </section>
+
+        <section>
+          <h2>O que não é feature toggle</h2>
+          <p>Chave especial do Secullum RH</p>
+
+          <hr />
+
+          <p>
+            Chave especial é preferência de usuário. Vale para uma empresa e o
+            próprio cliente liga ou desliga.
+          </p>
+
+          <p>Feature toggle é controlado por nós.</p>
         </section>
 
         <section data-auto-animate>
@@ -166,13 +152,6 @@
               // '/cidades'
             ];
           </script></code></pre>
-
-          <aside class="notes">
-            Digamos que a página "cidades" está sendo implementada hoje<br />
-            AINDA NÃO É UMA FEATURE FLAG.<br />
-            Ela foi criada mas ainda não queremos lançar para o público em
-            geral. Deixa comentada.
-          </aside>
         </section>
 
         <section data-auto-animate>
@@ -188,33 +167,6 @@
               paginas.push('/cidades');
             }
           </script></code></pre>
-
-          <aside class="notes">
-            Liberamos só para a Secullum. Ainda precisa de deploy, ainda não é
-            feature flag
-          </aside>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Formas de implementação</h2>
-
-          <pre><code data-file="paginas.tsx"><script type="text/template">
-            import { CONSTANTES } from './constantes';
-
-            const paginas = [
-              '/dashboard',
-              '/horarios',
-            ];
-
-            if (usuario.email.endsWith('@secullum.com.br') || CONSTANTES.MOSTRAR_CIDADES) {
-              paginas.push('/cidades');
-            }
-          </script></code></pre>
-
-          <aside class="notes">
-            Agora libera para Secullum ou geral com base em um arquivo de
-            constantes. Ainda não é feature flag
-          </aside>
         </section>
 
         <section data-auto-animate>
@@ -232,33 +184,6 @@
               paginas.push('/cidades');
             }
           </script></code></pre>
-
-          <aside class="notes">
-            Passamos para um arquivo json para ficar mais fácil de alterar.
-            Começa a se parecer com uma feature flag, principalmente no backend
-            onde é fácil alterar o arquivo sem fazer um deploy completo.
-          </aside>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Formas de implementação</h2>
-
-          <pre><code data-file="paginas.tsx"><script type="text/template">
-            import config from './config.json';
-
-            const paginas = [
-              '/dashboard',
-              '/horarios',
-            ];
-
-            if (config.cidades.ativo && config.cidades.usuariosPermitidos.includes(usuario.id)) {
-              paginas.push('/cidades');
-            }
-          </script></code></pre>
-
-          <aside class="notes">
-            Mais regras mas ainda usando arquivo json.
-          </aside>
         </section>
 
         <section data-auto-animate>
@@ -279,18 +204,12 @@
 
             if (config.empresas.ativo &&
               (config.empresas.usuariosPermitidos.includes(usuario.id)
-                // O que fazer se um dia a regra virar inclusiva (&&)?
                 || (usuario.bancoId % 100) < config.empresas.porcentagemRollout
                 || usuario.ehAdmin)) {
               paginas.push('/empresas');
             }
             // ... Várias outras páginas
           </script></code></pre>
-
-          <aside class="notes">
-            Aqui começa a ficar complicado pois temos muitas regras, muitas
-            flags e ainda usando um arquivo json
-          </aside>
         </section>
 
         <section data-auto-animate>
@@ -310,11 +229,6 @@
               paginas.push('/cidades');
             }
           </script></code></pre>
-
-          <aside class="notes">
-            Agora sim, estamos usando uma função de feature flag para controlar
-            a liberação das páginas. Surgem algumas dúvidas.
-          </aside>
         </section>
 
         <section data-auto-animate>
@@ -412,17 +326,23 @@
           </script></code></pre>
         </section>
 
-        <section data-auto-animate>
-          <h2>Sobre implementações não locais</h2>
+        <section class="small">
+          <h2>Por que não fazer em casa</h2>
+
+          <p>Um toggle caseiro começa com um if e termina virando produto:</p>
 
           <ul>
-            <li class="fragment">✅ Permite alteração rápida</li>
-            <li class="fragment">❌ Dependem de rede</li>
-            <li class="fragment">❌ Podem ter latência</li>
-            <li class="fragment">❌ Podem falhar</li>
-            <li class="fragment">
-              ❌ Podem sobrecarregar o servidor de features
+            <li>
+              Regra composta: hoje <span class="highlight-bg">||</span>, amanhã
+              <span class="highlight-bg">&amp;&amp;</span>?
             </li>
+            <li>
+              Rollout por porcentagem que não sorteia de novo a cada request
+            </li>
+            <li>Cache, invalidação e valor padrão quando a leitura falha</li>
+            <li>Histórico de quem ligou o quê, quando e para quem</li>
+            <li>Tela para quem não é dev mexer</li>
+            <li>Mesmo valor no backend, no front e nos outros serviços</li>
           </ul>
         </section>
 
@@ -430,14 +350,14 @@
           <h2>Sobre implementações não locais</h2>
 
           <ul>
-            <li>
-              Cache
-              <ul>
-                <li>E se ficar desatualizado?</li>
-                <li>E se ficar inconsistente entre instâncias?</li>
-                <li>E se for limpo do nada? (thundering herd)</li>
-              </ul>
+            <li>✅ Alteração rápida, sem deploy e vale na hora</li>
+            <li class="fragment">
+              ✅ Uma fonte só. Todas as instâncias leem o mesmo valor
             </li>
+            <li class="fragment">❌ Dependem de rede</li>
+            <li class="fragment">❌ Podem ter latência</li>
+            <li class="fragment">❌ Podem falhar</li>
+            <li class="fragment">❌ Podem sobrecarregar a fonte</li>
           </ul>
         </section>
 
@@ -449,7 +369,7 @@
           <ol style="list-style-type: lower-latin">
             <li>Crashar a aplicação</li>
             <li>
-              <div class="highlight fragment" style="height: 205%"></div>
+              <div class="highlight fragment" style="--linhas: 2"></div>
               Usar valor padrão local
             </li>
             <li>Usar valor no cache</li>
@@ -466,6 +386,7 @@
             </li>
             <li>Flags de ambiente</li>
             <li>Complexidade de teste</li>
+            <li>Inconsistência entre camadas</li>
           </ul>
 
           <p>Flag serviu o seu propósito mas ninguém removeu ela do código.</p>
@@ -476,12 +397,16 @@
               <th>Status</th>
             </tr>
             <tr>
-              <td>novo-dashboard</td>
-              <td>🟢Ativa</td>
+              <td>DistributedCacheAllowedServers</td>
+              <td>🟢 Ativa, com leitor no código</td>
             </tr>
             <tr>
-              <td>teste-2020-checkin</td>
-              <td>🔴Por que isso ainda existe?</td>
+              <td>HabilitarEnvioAvisoEsquecimentoPonto</td>
+              <td>🔴 Em 16 arquivos de configuração, nenhum leitor</td>
+            </tr>
+            <tr>
+              <td>HabilitarEnvioEmailComprovantePonto</td>
+              <td>🔴 Só a declaração no AppSettings</td>
             </tr>
           </table>
 
@@ -502,6 +427,7 @@
               Flags de ambiente
             </li>
             <li>Complexidade de teste</li>
+            <li>Inconsistência entre camadas</li>
           </ul>
 
           <p>
@@ -527,6 +453,7 @@
               <div class="highlight" data-id="highlight"></div>
               Complexidade de teste
             </li>
+            <li>Inconsistência entre camadas</li>
           </ul>
 
           <p>
@@ -536,8 +463,44 @@
           </p>
         </section>
 
+        <section data-auto-animate class="small">
+          <h2>Pegadinhas e limitações</h2>
+          <ul>
+            <li>"Débito de flags"</li>
+            <li>Flags de ambiente</li>
+            <li>Complexidade de teste</li>
+            <li>
+              <div class="highlight" data-id="highlight"></div>
+              Inconsistência entre camadas
+            </li>
+          </ul>
+
+          <p>
+            A mesma flag é lida no front e no backend. Cache diferente, deploy
+            defasado ou sessão antiga deixam a tela liberada e a API negando.
+          </p>
+
+          <p>Formas de mitigar:</p>
+          <ul>
+            <li>Backend responde o valor da flag junto com os dados da tela</li>
+            <li>
+              API recusa com um erro próprio de flag desligada e o front
+              recarrega as flags em vez de mostrar erro genérico
+            </li>
+          </ul>
+        </section>
+
         <section>
-          <h2>Perguntas?</h2>
+          <h2>Exemplos práticos</h2>
+
+          <ul>
+            <li>Área da Revenda</li>
+            <li>Seletor de servidor de banco</li>
+            <li>Telas escondidas no Secullum RH</li>
+            <li>IsDistributedCacheEnabled</li>
+          </ul>
+
+          <p>Demonstração ao vivo</p>
         </section>
 
         <section>
@@ -545,7 +508,17 @@
 
           <ul>
             <li>https://martinfowler.com/articles/feature-toggles.html</li>
+            <li>
+              https://docs.getunleash.io/topics/feature-flags/feature-flag-best-practices
+            </li>
+            <li>
+              https://learn.microsoft.com/azure/azure-app-configuration/concept-feature-management
+            </li>
           </ul>
+        </section>
+
+        <section>
+          <h2>Perguntas?</h2>
         </section>
       </div>
     </div>

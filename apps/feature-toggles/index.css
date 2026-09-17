@@ -116,6 +116,7 @@
   bottom: 0;
   left: 0;
   right: 0;
+  height: calc(100% * var(--linhas, 1));
 
   &::after {
     content: "";
@@ -127,11 +128,6 @@
     width: calc(100% + 20px);
     height: 110%;
     border-radius: var(--radius);
-  }
-
-  &.fit::after {
-    width: 100%;
-    left: 0;
   }
 }
 
