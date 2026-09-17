@@ -43,7 +43,7 @@
         </section>
 
         <section>
-          <p>Deploy sem feature</p>
+          <p>Deploy sem feature flag</p>
           <div class="mermaid definition">
             <pre>
               flowchart LR
@@ -60,7 +60,7 @@
         </section>
 
         <section>
-          <p>Deploy <strong>com</strong> feature</p>
+          <p>Deploy <strong>com</strong> feature flag</p>
           <div class="mermaid definition">
             <pre>
               flowchart LR
@@ -87,8 +87,7 @@
             <li>Testes A/B</li>
             <li>Rollouts graduais</li>
             <li>Selecionar quais usuários tem acesso a cada funcionalidade</li>
-            <li>Esconder páginas em testes</li>
-            <li>Mergear funcionalidades incompletas</li>
+            <li>Permite mergear funcionalidades incompletas</li>
           </ul>
         </section>
 
@@ -154,23 +153,6 @@
           <p>Exemplo incremental de uma feature de tela nova</p>
 
           <div>
-            <div class="code-title">pagina-cidades.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              export default function Cidades() {
-                return <div>Página legal</div>;
-              }
-            </script></code></pre>
-          </div>
-
-          <aside class="notes">
-            Digamos que a página "cidades" está sendo implementada hoje
-          </aside>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Formas de implementação</h2>
-
-          <div>
             <div class="code-title">paginas.tsx</div>
             <pre><code data-lang="typescript"><script type="text/template">
               const paginas = [
@@ -181,6 +163,7 @@
             </script></code></pre>
           </div>
           <aside class="notes">
+            Digamos que a página "cidades" está sendo implementada hoje<br />
             AINDA NÃO É UMA FEATURE FLAG.<br />
             Ela foi criada mas ainda não queremos lançar para o público em
             geral. Deixa comentada.
@@ -438,7 +421,7 @@
           <h2>Sobre implementações não locais</h2>
 
           <ul>
-            <li>Permite alteração rápida</li>
+            <li>✅ Permite alteração rápida</li>
           </ul>
         </section>
 
@@ -446,7 +429,8 @@
           <h2>Sobre implementações não locais</h2>
 
           <ul>
-            <li>Dependem de rede</li>
+            <li>✅ Permite alteração rápida</li>
+            <li>❌ Dependem de rede</li>
           </ul>
         </section>
 
@@ -454,8 +438,9 @@
           <h2>Sobre implementações não locais</h2>
 
           <ul>
-            <li>Dependem de rede</li>
-            <li>Podem ter latência</li>
+            <li>✅ Permite alteração rápida</li>
+            <li>❌ Dependem de rede</li>
+            <li>❌ Podem ter latência</li>
           </ul>
         </section>
 
@@ -463,9 +448,10 @@
           <h2>Sobre implementações não locais</h2>
 
           <ul>
-            <li>Dependem de rede</li>
-            <li>Podem ter latência</li>
-            <li>Podem falhar</li>
+            <li>✅ Permite alteração rápida</li>
+            <li>❌ Dependem de rede</li>
+            <li>❌ Podem ter latência</li>
+            <li>❌ Podem falhar</li>
           </ul>
         </section>
 
@@ -473,10 +459,11 @@
           <h2>Sobre implementações não locais</h2>
 
           <ul>
-            <li>Dependem de rede</li>
-            <li>Podem ter latência</li>
-            <li>Podem falhar</li>
-            <li>Podem sobrecarregar o servidor de features</li>
+            <li>✅ Permite alteração rápida</li>
+            <li>❌ Dependem de rede</li>
+            <li>❌ Podem ter latência</li>
+            <li>❌ Podem falhar</li>
+            <li>❌ Podem sobrecarregar o servidor de features</li>
           </ul>
         </section>
 
@@ -532,6 +519,7 @@
               "Débito de flags"
             </li>
             <li>Flags de ambiente</li>
+            <li>Complexidade de teste</li>
           </ul>
 
           <p>Flag serviu o seu propósito mas ninguém removeu ela do código.</p>
@@ -564,11 +552,13 @@
               "Débito de flags"
             </li>
             <li>Flags de ambiente</li>
+            <li>Complexidade de teste</li>
           </ul>
 
           <p>Formas de mitigar:</p>
           <ul>
             <li>Revisões periódicas de código</li>
+            <li>Issues para rastrear a remoção de flags obsoletas</li>
             <li>Data de expiração para cada flag com avisos</li>
           </ul>
         </section>
@@ -581,6 +571,7 @@
               <div class="highlight"></div>
               Flags de ambiente
             </li>
+            <li>Complexidade de teste</li>
           </ul>
 
           <p>
@@ -595,6 +586,24 @@
               <li>Configurar qual migration do banco usar</li>
             </ul>
           </div>
+        </section>
+
+        <section data-auto-animate>
+          <h2>Pegadinhas</h2>
+          <ul>
+            <li>"Débito de flags"</li>
+            <li>Flags de ambiente</li>
+            <li>
+              <div class="highlight"></div>
+              Complexidade de teste
+            </li>
+          </ul>
+
+          <p>
+            Conforme a quantidade de flags aumenta, a complexidade de teste
+            cresce exponencialmente devido ao número de combinações possíveis
+            entre elas.
+          </p>
         </section>
 
         <section>
