@@ -25,8 +25,7 @@
             <li>Pegadinhas e limitações</li>
             <li>Exemplos práticos</li>
             <!-- AR, seletor servidor banco, telas escondidas no pontoweb unleash -->
-
-            <li>Conclusão</li>
+            <li>Perguntas</li>
           </ol>
         </section>
 
@@ -109,7 +108,7 @@
           <p>Feature toggles são controlados por nós.</p>
         </section>
 
-        <section>
+        <section id="tipos-de-flags">
           <h2>Tipos de flags</h2>
           <table>
             <tr>
@@ -124,25 +123,33 @@
                 Ativa ou desativa funcionalidades até o lançamento oficial
               </td>
               <td>Curta</td>
-              <td>pagina-registros</td>
+              <td><span class="highlight-bg fit">pagina-registros</span></td>
             </tr>
             <tr>
               <td>Flag de experimento</td>
               <td>Teste A/B, geralmente com métricas para avaliar o impacto</td>
               <td>Média</td>
-              <td>mostrar-dark-mode</td>
+              <td><span class="highlight-bg fit">mostrar-dark-mode</span></td>
             </tr>
             <tr>
               <td>Flag operacional</td>
               <td>Controla aspectos operacionais do sistema</td>
               <td>Potencialmente longa</td>
-              <td>usar-novo-servidor-cache, desligar-calculo-pesado</td>
+              <td>
+                <span class="highlight-bg fit">usar-novo-servidor-cache</span>
+                ,
+                <span class="highlight-bg fit">desligar-calculo-pesado</span>
+              </td>
             </tr>
             <tr>
               <td>Flag de permissão</td>
               <td>Controla o acesso a funcionalidades com base em regras</td>
               <td>Potencialmente longa</td>
-              <td>desligar-chamada-por-video, beta-novo-site</td>
+              <td>
+                <span class="highlight-bg fit">desligar-chamada-por-video</span>
+                ,
+                <span class="highlight-bg fit">beta-novo-site</span>
+              </td>
             </tr>
           </table>
         </section>
@@ -152,16 +159,14 @@
 
           <p>Exemplo incremental de uma feature de tela nova</p>
 
-          <div>
-            <div class="code-title">paginas.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              const paginas = [
-                '/dashboard',
-                '/horarios',
-                // '/cidades'
-              ];
-            </script></code></pre>
-          </div>
+          <pre><code data-file="paginas.tsx"><script type="text/template">
+            const paginas = [
+              '/dashboard',
+              '/horarios',
+              // '/cidades'
+            ];
+          </script></code></pre>
+
           <aside class="notes">
             Digamos que a página "cidades" está sendo implementada hoje<br />
             AINDA NÃO É UMA FEATURE FLAG.<br />
@@ -173,19 +178,17 @@
         <section data-auto-animate>
           <h2>Formas de implementação</h2>
 
-          <div>
-            <div class="code-title">paginas.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              const paginas = [
-                '/dashboard',
-                '/horarios',
-              ];
+          <pre><code data-file="paginas.tsx"><script type="text/template">
+            const paginas = [
+              '/dashboard',
+              '/horarios',
+            ];
 
-              if (usuario.email.endsWith('@secullum.com.br')) {
-                paginas.push('/cidades');
-              }
-            </script></code></pre>
-          </div>
+            if (usuario.email.endsWith('@secullum.com.br')) {
+              paginas.push('/cidades');
+            }
+          </script></code></pre>
+
           <aside class="notes">
             Liberamos só para a Secullum. Ainda precisa de deploy, ainda não é
             feature flag
@@ -195,21 +198,19 @@
         <section data-auto-animate>
           <h2>Formas de implementação</h2>
 
-          <div>
-            <div class="code-title">paginas.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              import { CONSTANTES } from './constantes';
+          <pre><code data-file="paginas.tsx"><script type="text/template">
+            import { CONSTANTES } from './constantes';
 
-              const paginas = [
-                '/dashboard',
-                '/horarios',
-              ];
+            const paginas = [
+              '/dashboard',
+              '/horarios',
+            ];
 
-              if (usuario.email.endsWith('@secullum.com.br') || CONSTANTES.MOSTRAR_CIDADES) {
-                paginas.push('/cidades');
-              }
-            </script></code></pre>
-          </div>
+            if (usuario.email.endsWith('@secullum.com.br') || CONSTANTES.MOSTRAR_CIDADES) {
+              paginas.push('/cidades');
+            }
+          </script></code></pre>
+
           <aside class="notes">
             Agora libera para Secullum ou geral com base em um arquivo de
             constantes. Ainda não é feature flag
@@ -219,21 +220,19 @@
         <section data-auto-animate>
           <h2>Formas de implementação</h2>
 
-          <div>
-            <div class="code-title">paginas.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              import config from './config.json';
+          <pre><code data-file="paginas.tsx"><script type="text/template">
+            import config from './config.json';
 
-              const paginas = [
-                '/dashboard',
-                '/horarios',
-              ];
+            const paginas = [
+              '/dashboard',
+              '/horarios',
+            ];
 
-              if (config.MOSTRAR_CIDADES) {
-                paginas.push('/cidades');
-              }
-            </script></code></pre>
-          </div>
+            if (config.MOSTRAR_CIDADES) {
+              paginas.push('/cidades');
+            }
+          </script></code></pre>
+
           <aside class="notes">
             Passamos para um arquivo json para ficar mais fácil de alterar.
             Começa a se parecer com uma feature flag, principalmente no backend
@@ -244,21 +243,19 @@
         <section data-auto-animate>
           <h2>Formas de implementação</h2>
 
-          <div>
-            <div class="code-title">paginas.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              import config from './config.json';
+          <pre><code data-file="paginas.tsx"><script type="text/template">
+            import config from './config.json';
 
-              const paginas = [
-                '/dashboard',
-                '/horarios',
-              ];
+            const paginas = [
+              '/dashboard',
+              '/horarios',
+            ];
 
-              if (config.cidades.ativo && config.cidades.usuariosPermitidos.includes(usuario.id)) {
-                paginas.push('/cidades');
-              }
-            </script></code></pre>
-          </div>
+            if (config.cidades.ativo && config.cidades.usuariosPermitidos.includes(usuario.id)) {
+              paginas.push('/cidades');
+            }
+          </script></code></pre>
+
           <aside class="notes">
             Mais regras mas ainda usando arquivo json.
           </aside>
@@ -267,31 +264,29 @@
         <section data-auto-animate>
           <h2>Formas de implementação</h2>
 
-          <div>
-            <div class="code-title">paginas.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              import config from './config.json';
+          <pre><code data-file="paginas.tsx"><script type="text/template">
+            import config from './config.json';
 
-              const paginas = [
-                '/dashboard',
-                '/horarios',
-                '/cidades'
-              ];
+            const paginas = [
+              '/dashboard',
+              '/horarios',
+              '/cidades'
+            ];
 
-              if (config.feriados.ativo && config.feriados.usuariosPermitidos.includes(usuario.id)) {
-                paginas.push('/feriados');
-              }
+            if (config.feriados.ativo && config.feriados.usuariosPermitidos.includes(usuario.id)) {
+              paginas.push('/feriados');
+            }
 
-              if (config.empresas.ativo && 
-                (config.empresas.usuariosPermitidos.includes(usuario.id)
-                  // O que fazer se um dia a regra virar inclusiva (&&)?
-                  || (usuario.bancoId % 100) < config.empresas.porcentagemRollout
-                  || usuario.ehAdmin)) {
-                paginas.push('/empresas');
-              }
-              // ... Várias outras páginas
-            </script></code></pre>
-          </div>
+            if (config.empresas.ativo &&
+              (config.empresas.usuariosPermitidos.includes(usuario.id)
+                // O que fazer se um dia a regra virar inclusiva (&&)?
+                || (usuario.bancoId % 100) < config.empresas.porcentagemRollout
+                || usuario.ehAdmin)) {
+              paginas.push('/empresas');
+            }
+            // ... Várias outras páginas
+          </script></code></pre>
+
           <aside class="notes">
             Aqui começa a ficar complicado pois temos muitas regras, muitas
             flags e ainda usando um arquivo json
@@ -301,23 +296,21 @@
         <section data-auto-animate>
           <h2>Formas de implementação</h2>
 
-          <div>
-            <div class="code-title">paginas.tsx</div>
-            <pre><code data-lang="typescript"><script type="text/template">
-              import features from './features';
+          <pre><code data-file="paginas.tsx"><script type="text/template">
+            import features from './features';
 
-              const paginas = [
-                '/dashboard',
-                '/horarios',
-              ];
+            const paginas = [
+              '/dashboard',
+              '/horarios',
+            ];
 
-              // Chama a API sempre?
-              // Faz cache? Por quanto tempo?
-              if (await features.enabled('cidades', usuario)) {
-                paginas.push('/cidades');
-              }
-            </script></code></pre>
-          </div>
+            // Chama a API sempre?
+            // Faz cache? Por quanto tempo?
+            if (await features.enabled('cidades', usuario)) {
+              paginas.push('/cidades');
+            }
+          </script></code></pre>
+
           <aside class="notes">
             Agora sim, estamos usando uma função de feature flag para controlar
             a liberação das páginas. Surgem algumas dúvidas.
@@ -334,8 +327,11 @@
             <li>Arquivos de configuração</li>
             <li>Serviços externos (Azure AppConfig, Unleash, etc)</li>
           </ul>
-          <pre class="full-height"><code>
-            async Task&lt;IServidorCache&gt; BuscarServidorCacheAsync() 
+
+          <pre
+            class="full-height"
+          ><code data-file="CacheFactory.cs"><script type="text/template">
+            async Task<IServidorCache> BuscarServidorCacheAsync()
             {
               var usarNovoServidorCache = await contexto.FeatureToggles
                 .Where(c => c.Chave == "NovoServidorCache")
@@ -346,7 +342,7 @@
                 ? new KeyDBCache()
                 : new RedisCache();
             }
-  </code></pre>
+          </script></code></pre>
         </section>
 
         <section data-auto-animate>
@@ -359,30 +355,29 @@
             </li>
             <li>Serviços externos (Azure AppConfig, Unleash, etc)</li>
           </ul>
+
           <div class="horizontal block full-height">
             <div>
-              <div class="code-title">appsettings.json</div>
-              <pre><code data-lang="json">
+              <pre><code data-file="appsettings.json"><script type="text/template">
                 {
                   "NovoServidorCache": true
                 }
-            </code></pre>
+              </script></code></pre>
             </div>
 
             <div>
-              <div class="code-title">Program.cs</div>
-              <pre id="program-cs"><code data-lang="csharp">
-            builder.Services.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+              <pre><code data-file="Program.cs"><script type="text/template">
+                builder.Services.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            IServidorCache BuscarServidorCacheAsync() 
-            {
-              var usarNovoServidorCache = configuration.GetValue&lt;bool&gt;("NovoServidorCache");
+                IServidorCache BuscarServidorCacheAsync()
+                {
+                  var usarNovoServidorCache = configuration.GetValue<bool>("NovoServidorCache");
 
-              return usarNovoServidorCache
-                ? new KeyDBCache()
-                : new RedisCache();
-            }
-  </code></pre>
+                  return usarNovoServidorCache
+                    ? new KeyDBCache()
+                    : new RedisCache();
+                }
+              </script></code></pre>
             </div>
           </div>
         </section>
@@ -398,7 +393,7 @@
             </li>
           </ul>
 
-          <pre><code data-lang="csharp" style="font-size: 0.8em;">
+          <pre><code data-file="Program.cs" style="font-size: 0.8em;"><script type="text/template">
             // Possui cache, polling, fallbacks, retries, etc
             var settings = new UnleashSettings()
             {
@@ -407,63 +402,27 @@
                 // ... Autenticação, logs, etc
             };
             var unleash = new DefaultUnleash(settings);
-            services.AddSingleton&lt;IUnleash&gt;(c =&gt; unleash);
+            services.AddSingleton<IUnleash>(c => unleash);
 
             // ...
 
             var context = new UnleashContext() { UserId = m_configuracoesAmbiente.UsuarioId };
 
             var usarNovoServidorCache = unleash.IsEnabled("NovoServidorCache", context);
-  </code></pre>
+          </script></code></pre>
         </section>
 
         <section data-auto-animate>
           <h2>Sobre implementações não locais</h2>
 
           <ul>
-            <li>✅ Permite alteração rápida</li>
-          </ul>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Sobre implementações não locais</h2>
-
-          <ul>
-            <li>✅ Permite alteração rápida</li>
-            <li>❌ Dependem de rede</li>
-          </ul>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Sobre implementações não locais</h2>
-
-          <ul>
-            <li>✅ Permite alteração rápida</li>
-            <li>❌ Dependem de rede</li>
-            <li>❌ Podem ter latência</li>
-          </ul>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Sobre implementações não locais</h2>
-
-          <ul>
-            <li>✅ Permite alteração rápida</li>
-            <li>❌ Dependem de rede</li>
-            <li>❌ Podem ter latência</li>
-            <li>❌ Podem falhar</li>
-          </ul>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Sobre implementações não locais</h2>
-
-          <ul>
-            <li>✅ Permite alteração rápida</li>
-            <li>❌ Dependem de rede</li>
-            <li>❌ Podem ter latência</li>
-            <li>❌ Podem falhar</li>
-            <li>❌ Podem sobrecarregar o servidor de features</li>
+            <li class="fragment">✅ Permite alteração rápida</li>
+            <li class="fragment">❌ Dependem de rede</li>
+            <li class="fragment">❌ Podem ter latência</li>
+            <li class="fragment">❌ Podem falhar</li>
+            <li class="fragment">
+              ❌ Podem sobrecarregar o servidor de features
+            </li>
           </ul>
         </section>
 
@@ -489,21 +448,8 @@
 
           <ol style="list-style-type: lower-latin">
             <li>Crashar a aplicação</li>
-            <li>Usar valor padrão local</li>
-            <li>Usar valor no cache</li>
-            <li>Ignorar a feature</li>
-          </ol>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Sobre implementações não locais</h2>
-
-          <p>Se o serviço cair? 💀</p>
-
-          <ol style="list-style-type: lower-latin">
-            <li>Crashar a aplicação</li>
             <li>
-              <div class="highlight" style="height: 205%"></div>
+              <div class="highlight fragment" style="height: 205%"></div>
               Usar valor padrão local
             </li>
             <li>Usar valor no cache</li>
@@ -511,11 +457,11 @@
           </ol>
         </section>
 
-        <section data-auto-animate>
+        <section data-auto-animate class="small">
           <h2>Pegadinhas e limitações</h2>
           <ul>
             <li>
-              <div class="highlight"></div>
+              <div class="highlight" data-id="highlight"></div>
               "Débito de flags"
             </li>
             <li>Flags de ambiente</li>
@@ -534,26 +480,10 @@
               <td>🟢Ativa</td>
             </tr>
             <tr>
-              <td>usar-novo-servico-calculos</td>
-              <td>🟡Rollout</td>
-            </tr>
-            <tr>
               <td>teste-2020-checkin</td>
               <td>🔴Por que isso ainda existe?</td>
             </tr>
           </table>
-        </section>
-
-        <section data-auto-animate>
-          <h2>Pegadinhas e limitações</h2>
-          <ul>
-            <li>
-              <div class="highlight"></div>
-              "Débito de flags"
-            </li>
-            <li>Flags de ambiente</li>
-            <li>Complexidade de teste</li>
-          </ul>
 
           <p>Formas de mitigar:</p>
           <ul>
@@ -563,12 +493,12 @@
           </ul>
         </section>
 
-        <section data-auto-animate>
-          <h2>Pegadinhas</h2>
+        <section data-auto-animate class="small">
+          <h2>Pegadinhas e limitações</h2>
           <ul>
             <li>"Débito de flags"</li>
             <li>
-              <div class="highlight"></div>
+              <div class="highlight" data-id="highlight"></div>
               Flags de ambiente
             </li>
             <li>Complexidade de teste</li>
@@ -588,13 +518,13 @@
           </div>
         </section>
 
-        <section data-auto-animate>
-          <h2>Pegadinhas</h2>
+        <section data-auto-animate class="small">
+          <h2>Pegadinhas e limitações</h2>
           <ul>
             <li>"Débito de flags"</li>
             <li>Flags de ambiente</li>
             <li>
-              <div class="highlight"></div>
+              <div class="highlight" data-id="highlight"></div>
               Complexidade de teste
             </li>
           </ul>
@@ -607,7 +537,11 @@
         </section>
 
         <section>
-          <h2>Conclusão e referências</h2>
+          <h2>Perguntas?</h2>
+        </section>
+
+        <section>
+          <h2>Referências</h2>
 
           <ul>
             <li>https://martinfowler.com/articles/feature-toggles.html</li>
